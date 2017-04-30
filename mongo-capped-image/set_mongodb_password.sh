@@ -3,7 +3,7 @@
 USER=${MONGODB_USER:-"admin"}
 DATABASE=${MONGODB_DATABASE:-"admin"}
 PASS=${MONGODB_PASS:-"admin123"}
-CAPPEDCOLLECTION=${MONGOCAPPEDCOLLECTION:-"no"}
+CAPPED_COLLECTION=${MONGODB_CAPPEDCOLLECTION:-"no"}
 _word=$( [ ${MONGODB_PASS} ] && echo "preset" || echo "random" )
 
 RET=1
@@ -25,7 +25,7 @@ db.createUser({user: '$USER', pwd: '$PASS', roles:[{role:'dbOwner',db:'$DATABASE
 EOF
 fi
 
-if [ "$CAPPEDCOLLECTION" == "yes" ]; then
+if [ "$CAPPED_COLLECTION" == "yes" ]; then
 	echo "=> Creating a capped collection with a size of 5242880 bytes or 5000 documents"
 	mongo admin -u $USER -p $PASS << EOF
 use $DATABASE
