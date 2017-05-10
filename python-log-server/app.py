@@ -21,7 +21,9 @@ def handle_json(json):
 
 
 def mongo_streams():
+    from bson import json_util
     from pymongo import MongoClient, CursorType
+    import json
     connection = MongoClient(host='127.0.0.1', port=27017)
     db = connection.get_database('admin')
     db.authenticate(name='admin', password='admin123')
@@ -30,8 +32,8 @@ def mongo_streams():
         cursor = collection.find({}, cursor_type=CursorType.TAILABLE_AWAIT)
         while cursor.alive:
             for message in cursor:
-                message.pop('_id', None)
-                socket_io.emit('log', message)
+                print(json.loads(json_util.dumps(message)))
+                socket_io.emit('log', json.loads(json_util.dumps(message)))
 
 if __name__ == '__main__':
     socket_io.run(app)
