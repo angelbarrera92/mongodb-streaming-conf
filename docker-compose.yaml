@@ -1,0 +1,10 @@
+sampleapp:
+  build: ./python-app
+loadbalancer:
+  image: 'tutum/haproxy:latest'
+  links:
+    - sampleapp
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  ports:
+    - 8080:80
