@@ -2,7 +2,7 @@ from flask import Flask
 import logging
 from mongolog.handlers import MongoHandler
 
-app = Flask(__name__)
+app = Flask('sampleApp')
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
