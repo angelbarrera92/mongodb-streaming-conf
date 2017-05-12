@@ -4,6 +4,9 @@ USER=${MONGODB_USER:-"admin"}
 DATABASE=${MONGODB_DATABASE:-"admin"}
 PASS=${MONGODB_PASS:-"admin123"}
 CAPPED_COLLECTION=${MONGODB_CAPPEDCOLLECTION:-"no"}
+CAPPED_COLLECTION_NAME=${MONGODB_CAPPEDCOLLECTION_NAME:-"streaming"}
+CAPPED_COLLECTION_SIZE=${MONGODB_CAPPEDCOLLECTION_SIZE:-25600}
+CAPPED_COLLECTION_MAX=${MONGODB_CAPPEDCOLLECTION_MAX:-100}
 _word=$( [ ${MONGODB_PASS} ] && echo "preset" || echo "random" )
 
 RET=1
@@ -26,10 +29,10 @@ EOF
 fi
 
 if [ "$CAPPED_COLLECTION" == "yes" ]; then
-	echo "=> Creating a capped collection with a size of 5242880 bytes or 5000 documents"
+	echo "=> Creating a capped collection named ${CAPPED_COLLECTION_NAME} with a size of ${CAPPED_COLLECTION_SIZE} bytes or ${CAPPED_COLLECTION_MAX} documents"
 	mongo admin -u $USER -p $PASS << EOF
 use $DATABASE
-db.createCollection("streaming", { capped : true, size : 5242880, max : 5000 } )
+db.createCollection('$CAPPED_COLLECTION_NAME', { capped : true, size : $CAPPED_COLLECTION_SIZE, max : $CAPPED_COLLECTION_MAX } )
 EOF
 fi
 
