@@ -1,10 +1,30 @@
-sampleapp:
-  build: ./python-app
-loadbalancer:
-  image: 'tutum/haproxy:latest'
-  links:
-    - sampleapp
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-  ports:
-    - 8080:80
+version: "3"
+services:
+  mongo:
+    build: ./mongo-capped-image
+    ports:
+      - 27017:27017
+    env_file: variables.env
+  log_server:
+    build: ./python-log-server
+    ports: 
+      - 5000:5000
+    env_file: variables.env
+    # command: sh -c "sleep 15; python app.py"
+  crazy_aggregate_app:
+    build: ./python-ms1-app
+    env_file: variables.env
+    command: sh -c "sleep 20; python app.py"
+  bank_microservice:
+    build: ./python-ms2-app
+    env_file: variables.env
+    command: sh -c "sleep 15; python app.py"
+  loadbalancer:
+    image: 'dockercloud/haproxy:latest'
+    links:
+      - crazy_aggregate_app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8080:80
+    command: sh -c "sleep 25; /sbin/tini -- dockercloud-haproxy"
